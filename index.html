@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian National Movement Practice Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 1.875rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .setup-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        select, input {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .quiz-screen {
+            display: none;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .question-badge {
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-item {
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            font-size: 1rem;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary);
+            background: #fdfdfd;
+        }
+
+        .option-item.selected {
+            border-color: var(--primary);
+            background: #e0e7ff;
+            color: #312e81;
+            font-weight: 500;
+        }
+
+        .option-item.correct {
+            border-color: var(--success);
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .option-item.incorrect {
+            border-color: var(--error);
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .explanation {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            border-left: 4px solid var(--primary);
+            display: none;
+        }
+
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .results-screen h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        .score-details {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Indian National Movement Practice Hub</h1>
+            <p>Master all 120 questions across Weeks 1 to 12</p>
+        </header>
+
+        <!-- SETUP SCREEN -->
+        <div id="setupScreen" class="setup-screen">
+            <div class="form-group">
+                <label for="assignmentSelect">Select Week / Assignment</label>
+                <select id="assignmentSelect">
+                    <option value="all">🚀 All Weeks Combined (All 120 Questions)</option>
+                    <option value="1">Week 1 - Assignment 1</option>
+                    <option value="2">Week 2 - Assignment 2</option>
+                    <option value="3">Week 3</option>
+                    <option value="4">Week 4</option>
+                    <option value="5">Week 5</option>
+                    <option value="6">Week 6</option>
+                    <option value="7">Week 7</option>
+                    <option value="8">Week 8</option>
+                    <option value="9">Week 9</option>
+                    <option value="10">Week 10</option>
+                    <option value="11">Week 11</option>
+                    <option value="12">Week 12</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="modeSelect">Practice Mode</label>
+                <select id="modeSelect">
+                    <option value="practice">Practice Mode (Instant Feedback & Explanation)</option>
+                    <option value="exam">Exam Mode (Score at the end)</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="startQuiz()">Start Practicing</button>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+        <div id="quizScreen" class="quiz-screen">
+            <div class="quiz-header">
+                <span id="progressText">Question 1 of 10</span>
+                <span id="assignmentBadge" class="question-badge">Week 1</span>
+            </div>
+
+            <div id="questionContainer">
+                <div class="question-text" id="questionText">Loading question...</div>
+                <div id="answersContainer" class="options-list"></div>
+                <div id="explanationBox" class="explanation"></div>
+            </div>
+
+            <div class="quiz-footer">
+                <button class="btn" id="prevBtn" onclick="prevQuestion()" style="display:none; background-color: #64748b;">Previous</button>
+                <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display:none; margin-left: auto;">Next Question</button>
+            </div>
+        </div>
+
+        <!-- RESULTS SCREEN -->
+        <div id="resultsScreen" class="results-screen">
+            <h2>Practice Complete! 🎉</h2>
+            <div class="score-display" id="finalScore">8/10</div>
+            <div class="score-details" id="scoreMessage">Great job! Keep practicing to achieve perfection.</div>
+            <button class="btn" onclick="resetToSetup()">Try Again / Change Assignment</button>
+        </div>
+    </div>
+
+    <script>
+        const questionDatabase = {
+            1: [
+                { q: "Which of the following statements regarding the English East India Company's early establishment in India is/are correct?\nI. The English East India Company was established as a joint stock company in 1600.\nII. Sir Thomas Roe visited Jahangir's court and secured exclusive rights for the Company to reside and build factories in Mughal territories.\nIII. Fort William was established in Madras, Fort St. George in Calcutta, and Fort George in Bombay.\nIV. By 1700, the English East India Company had established factories in Bombay, Madras and Calcutta.", options: ["A. I, II & III", "B. I, II & IV", "C. II, III & IV", "D. I & IV only"], answer: 1, exp: "Statement III is incorrect because Fort William was established in Calcutta and Fort St. George in Madras. Statements I, II, and IV are correct." },
+                { q: "Consider the following statements-one labelled as an assertion and the other as a reason.\nAssertion (A): The Dual Government introduced by Robert Clive in 1765 is considered a flawed administrative arrangement.\nReason (R): Under Dual Government, the Company held the Diwani rights (revenue collection) while the Nawab retained Nizamat rights (law and order), leading to lack of direct accountability.\nIn the context of the above two statements, which of the following is correct?", options: ["Both A and R are true, and R explains A", "Both A and R are true, but R does not explain A", "A is true, but R is false", "A is false, but R is true"], answer: 0, exp: "Both A and R are true, and R explains A." },
+                { q: "Match the following revenue settlements with their correct descriptions:\nRevenue Settlement: I. Permanent Settlement II. Ryotwari Settlement III. Mahalwari Settlement IV. Tax Farming Policy (Hastings)\nKey Feature: A. Village community collectively responsible for payment B. Zamindars recognized as absolute proprietors C. State dealt directly with individual cultivators D. Zamindari estates auctioned yearly", options: ["A. I-B, II-C, III-A, IV-D", "B. I-A, II-D, III-C, IV-B", "C. I-B, II-A, III-D, IV-C", "D. I-C, II-B, III-A, IV-D"], answer: 0, exp: "Permanent Settlement maps to Zamindars as absolute proprietors (I-B), Ryotwari to individual cultivators (II-C), Mahalwari to village community (III-A), and Tax Farming to yearly auction (IV-D)." },
+                { q: "Arrange the following educational developments in India in the correct chronological order:\nI. Establishment of Calcutta Aliah Madrasa\nII. Macaulay's Minute on Education\nIII. Fort William College established\nIV. Wood's Educational Despatch", options: ["A. I-II-III-IV", "B. III-I-II-IV", "C. I-III-II-IV", "D. II-I-IV-III"], answer: 2, exp: "Calcutta Aliah Madrasa (1780), Fort William College (1800), Macaulay's Minute (1835), Wood's Educational Despatch (1854)." },
+                { q: "Read the following statements about Lord Warren Hastings' Orientalist policies:\nStatement I: Sir William Jones established the Asiatic Society of Bengal in 1784 with the patronage of Warren Hastings.\nStatement II: In the Diwani Adalat and Faujdari Adalat courts, only English judges were appointed, without any native assistance.", options: ["A. Both statements are true", "B. Statement I is true, but Statement II is false", "C. Statement I is false, but Statement II is true", "D. Both statements are false"], answer: 1, exp: "Statement I is true. Statement II is false because native officers assisted judges." },
+                { q: "Which of the following statements about 19th-century religious reform movements in India are correct?\nI. Brahmo Samaj was founded by Ram Mohan Roy in 1828, emphasizing monotheism and rational religion.\nII. Arya Samaj was founded by Swami Vivekananda with the motto 'Back to the Vedas'.\nIII. Prarthana Samaj was established by Atmaram Pandurang in Maharashtra and spoke against caste discrimination.\nIV. Syed Ahmad Khan established the Aligarh Movement to promote Western education among Muslims.", options: ["A. I, II & III", "B. I & IV only", "C. II, III & IV", "D. I, III & IV"], answer: 3, exp: "Arya Samaj was founded by Swami Dayananda Saraswati, not Vivekananda. I, III, and IV are correct." },
+                { q: "Who introduced the Mahalwari Settlement in India?", options: ["A. Lord Cornwallis", "B. Thomas Munro", "C. Holt Mackenzie", "D. Robert Clive"], answer: 2, exp: "Holt Mackenzie introduced the Mahalwari Settlement." },
+                { q: "The concept of 'Downward Filtration Theory' of English education in India primarily aimed to:", options: ["A. Educate the entire Indian population in English from the grassroots level upward", "B. Train a small section of Indian elites in English, expecting knowledge to spread to the masses", "C. Replace all native languages with English at every level of administration immediately", "D. Establish missionary schools for mass conversion to Christianity"], answer: 1, exp: "It aimed to educate a small elite group to filter knowledge down to the masses." },
+                { q: "Which of the following statements about lower-caste reform movements in 19th-century India are correct?\nI. Jotirao Phule from Maharashtra and Narayana Guru from Kerala were forerunners of anti-Brahminic movements.\nII. Narayana Guru's movement proclaimed the concept of 'One God, One Religion, One Caste'.\nIII. These lower-caste movements are categorized by scholars as 'movements from above' similar to Brahmo Samaj.\nIV. These movements established temples and schools for untouchables as part of their reform agenda.", options: ["A. I, II & IV", "B. I & III only", "C. II, III & IV", "D. I, II, III & IV"], answer: 0, exp: "These were 'movements from below', making statement III incorrect." },
+                { q: "Which Act first established Parliamentary control over the English East India Company's affairs in India?", options: ["A. Pitt's India Act, 1784", "B. Charter Act, 1813", "C. Regulating Act, 1773", "D. Charter Act, 1833"], answer: 2, exp: "The Regulating Act of 1773 established parliamentary control." }
+            ],
+            2: [
+                { q: "Which of the following statements about the Sepoy Army in British India are correct?\nI) By the 1830s, the Sepoy Army numbered approximately 3 lakh soldiers, vastly outnumbering the 50,000 British troops stationed in India.\nII) The term 'Sepoy' is of Persian origin, referring to an infantry soldier in the Mughal military.\nIII) The Madras Native Infantry was a homogeneous group recruited only from the upper castes of Madras presidency.\nIV) Gurkha soldiers from Nepal formed one of the regiments in the British Indian Army.", options: ["A. I, II & III", "B. I, III & IV", "C. I, II & IV", "D. II, III & IV"], answer: 2, exp: "Statement III is incorrect; Madras Native Infantry was not exclusively upper-caste." },
+                { q: "Consider the following statements-one labelled as Assertion (A) and the other as Reason (R).\nAssertion (A): The Doctrine of Lapse contributed significantly to the political discontent that led to the 1857 Revolt.\nReason (R): Under the Doctrine of Lapse, Lord Dalhousie annexed princely states where there was no natural male heir, disregarding adopted sons and female succession.\nIn the context of the above two statements, which one of the following is correct?", options: ["A. Both A and R are true, and R is the correct explanation of A", "B. Both A and R are true, but R is not the correct explanation of A", "C. A is true, but R is false", "D. A is false, but R is true"], answer: 0, exp: "Both A and R are true, and R explains A." },
+                { q: "Which of the following statements about the scholarly interpretations of the 1857 Revolt are correct?\nI. Benjamin Disraeli argued in the British Parliament that the 1857 uprising was a national revolt and not merely a Sepoy mutiny.\nII. Karl Marx refuted the mutiny theory and argued that the revolt was caused by the predatory colonial policies and economic exploitation of the British.\nIII. S. B. Chaudhuri argued that the feudal lords in 1857 were conscious and deliberate champions of nationalism.\nIV. A. R. Desai analysed the revolt as a struggle between worn-out feudalism and newly introduced commercial capitalism.", options: ["A. I, II & III", "B. II, III & IV", "C. I, II & IV", "D. I, III & IV"], answer: 2, exp: "Statement III is incorrect because feudal lords were defending privileges, not acting as conscious champions of modern nationalism." },
+                { q: "Arrange the following in the correct chronological order:\nI) Vellore Mutiny\nII) Barrackpur Mutiny\nIII) Meerut Mutiny\nIV) General Services Enlistment Act", options: ["A. I-II-IV-III", "B. III-I-II-IV", "C. II-I-IV-III", "D. I-III-II-IV"], answer: 0, exp: "Vellore Mutiny (1806), Barrackpur Mutiny (1824), General Services Enlistment Act (1856), Meerut Mutiny (1857)." },
+                { q: "Read the following statements about the course of the 1857 Revolt and choose the correct option:\nStatement I: On 10th May 1857, the Meerut regiment unfurled the banner of revolt and the mutineers marched to Delhi, where they declared Bahadur Shah Zafar as Emperor of Hindustan.\nStatement II: Tantia Tope was the leader of the revolt in Delhi, while Bakht Khan led the revolt in Kanpur.", options: ["A. Both statements are true", "B. Statement I is true, but Statement II is false", "C. Statement I is false, but Statement II is true", "D. Both statements are false"], answer: 1, exp: "Bakht Khan led in Delhi and Tantia Tope/Nana Saheb in Kanpur." },
+                { q: "Which of the following are considered reasons for the failure of the 1857 Revolt?\nI) The Revolt was largely localized to northern India and did not spread to the south.\nII) There was no centralized leadership and rebel movements across regions were uncoordinated.\nIII) The educated Indian middle class and most princes actively supported the revolt.\nIV) The British used railways and telegraph systems to mobilize troops and track rebel movements effectively.", options: ["A. I, II & III", "B. I, II & IV", "C. II, III & IV", "D. I, III & IV"], answer: 1, exp: "Statement III is incorrect because the educated middle class and princes did not support the revolt." },
+                { q: "The Deccan Agriculturists' Relief Act of 1879 was passed primarily in response to which of the following uprisings?", options: ["A. Indigo Revolt of Bengal", "B. Pabna Agrarian Uprising", "C. Peasant riots in Pune and Ahmadnagar, Maharashtra", "D. Santhal Uprising of Bhagalpur"], answer: 2, exp: "It responded to the peasant riots in Pune and Ahmadnagar." },
+                { q: "Consider the following statements-one labelled as Assertion (A) and the other as Reason (R).\nAssertion (A): The Subsidiary Alliance system resulted in the princely states becoming dependent allies of the East India Company.\nReason (R): Under the Subsidiary Alliance, the princely states were required to maintain a British army in their capital at their own expense and were not permitted to keep a standing army of their own.", options: ["A. Both A and R are true, and R is the correct explanation of A", "B. Both A and R are true, but R is not the correct explanation of A", "C. A is true, but R is false", "D. A is false, but R is true"], answer: 0, exp: "Both A and R are true and R explains A." },
+                { q: "Which of the following statements about the Pabna Agrarian Uprising (1873) are correct?\nI) The tenants of Yusufshahi Pargana in Pabna district formed an Agrarian League to resist Zamindar demands.\nII) The uprising was characterized by large-scale violence and armed confrontation with the British army.\nIII) The movement involved a rent strike and use of colonial courts to challenge Zamindars legally.\nIV) The Bengal Tenancy Act of 1885 was one of the outcomes of this agrarian unrest.", options: ["A. I, II & III", "B. II & IV only", "C. I, III & IV", "D. I, II, III & IV"], answer: 2, exp: "Statement II is incorrect because the uprising was peaceful and relied on legal resistance." },
+                { q: "Which of the following correctly describes the changes that took place after the 1857 Revolt?\nI) The East India Company's political and economic role in India was abolished and the British Crown directly took over governance.\nII) The title of Governor General was changed to Governor General cum Viceroy.\nIII) Queen Victoria announced the continuation of the annexation policy to further strengthen British control.\nIV) The Board of Control and the Court of Directors were abolished and replaced by a Secretary of State for India directly representing the British Crown.", options: ["A. I, II & III", "B. I, II & IV", "C. II, III & IV", "D. I, III & IV"], answer: 1, exp: "Statement III is false; annexation policy was abandoned." }
+            ],
+            3: [
+                { q: "Which of the following best describes the pre-colonial role of the handicraft industry in India?", options: ["It primarily catered to the needs of the common people and rural masses", "It was patronized by the aristocracy, zamindars, kings, and rich merchants", "It was controlled and regulated by the Mughal central government", "It functioned mainly in rural areas and was self-sufficient in nature"], answer: 1, exp: "Indian handicrafts were heavily patronized by royal courts and aristocracy." },
+                { q: "Read the following Assertion (A) and Reasoning (R) and choose the correct option.\n(A): India transformed from an exporter of finished goods into a supplier of raw materials and an importer of British manufactured products after 1815.\n(R): The British imposed heavy import duties on Indian finished goods sent to England, while raw materials from India entered England duty-free.", options: ["Both (A) and (R) are true, and (R) explains (A)", "Both (A) and (R) are true, but (R) does not explain (A)", "(A) is true, but (R) is false", "(A) is false, but (R) is true"], answer: 0, exp: "Both A and R are true and R explains A." },
+                { q: "Match the following economic critics with their key arguments or contributions:", options: ["I-C, II-A, III-B, IV-D", "I-A, II-C, III-D, IV-B", "I-B, II-D, III-A, IV-C", "I-C, II-D, III-A, IV-B"], answer: 0, exp: "Standard economic nationalism mapping." },
+                { q: "Which of the following was NOT a consequence of the British land revenue reforms introduced from 1770 onwards in India?", options: ["Transition from flexible landlordism to rigid landlordism", "Creation of new social classes such as new landlords, intermediaries, and money lenders", "Strengthening of the traditional agricultural system through new tenurial arrangements", "Increased misery due to excessive tax demands each year"], answer: 2, exp: "British reforms weakened traditional agriculture rather than strengthening it." },
+                { q: "Which of the following newspapers is considered the first Indian-owned English language daily in the Indian subcontinent?", options: ["Amrit Bazar Patrika", "Hindu Patriot", "Indian Mirror", "Bombay Chronicle"], answer: 2, exp: "Indian Mirror is recognized as the first Indian-owned English daily." },
+                { q: "Consider the following statements about the Ilbert Bill controversy of 1883:\nI. The bill proposed granting limited criminal jurisdiction to native officials over British subjects in country towns.\nII. The bill was welcomed by Anglo-Indian officials and non-officials alike as a step toward racial equality.\nIII. The modified bill that was finally passed preserved the right of European subjects to demand trial by a jury including European judges.\nIV. According to scholars, the Ilbert Bill controversy was a motivating factor in the birth of the Indian National Congress in 1885.", options: ["I and II only", "II and IV only", "I, III and IV only", "I, II, III and IV"], answer: 2, exp: "Statement II is false because Anglo-Indians fiercely opposed the bill." },
+                { q: "Which of the following was NOT a feature of the early political associations formed by the middle class in India before 1885?", options: ["They had formal structures with elections, voting, and resolutions", "They prepared memoranda and speeches to influence British public opinion", "They demanded complete independence from British rule as their primary objective", "They included both Indians and Europeans as members in some cases"], answer: 2, exp: "Early associations did not demand complete independence." },
+                { q: "Read the following Assertion (A) and Reasoning (R) and choose the correct option.\n(A): The London Indian Society and the East India Association, both established in London, carried a more unified and pan-Indian nationalist image compared to associations formed within India.\n(R): These associations included members from different regions and religious groups, primarily Indian students abroad, who had left behind regional and religious differences.", options: ["Both (A) and (R) are true, and (R) explains (A)", "Both (A) and (R) are true, but (R) does not explain (A)", "(A) is true, but (R) is false", "(A) is false, but (R) is true"], answer: 0, exp: "Both A and R are true and R explains A." },
+                { q: "Consider the following statements about the Vernacular Press Act of 1878:\nI. It was enacted by Lord Lytton primarily to restrict Indian language newspapers.\nII. English language newspapers were exempt from the provisions of this Act.\nIII. The Act allowed the right to appeal in a court against the actions taken under it.\nIV. Amrit Bazar Patrika converted itself into an all-English weekly to avoid restrictions under this Act.", options: ["I, II and III only", "I, II and IV only", "II, III and IV only", "I, III and IV only"], answer: 1, exp: "Statement III is false because the Act denied the right to appeal in court." },
+                { q: "With reference to the growth of the press in India, which of the following pairs of newspaper and language/cause is INCORRECTLY matched?", options: ["Amrit Bazar Patrika - Early nationalist news from Bengal", "Hindoo Patriot - Support for Indigo Revolts of 1859", "Kesari - Propagated Maratha nationalist sentiments", "Mirat-ul-Akhbar - Published in the Bengali language by Ram Mohan Roy"], answer: 3, exp: "Mirat-ul-Akhbar was published in Persian, not Bengali." }
+            ],
+            4: [
+                { q: "According to scholars, which of the following events is widely regarded as the starting point for the rise of nationalism in the world?", options: ["The American Declaration of Independence in 1776", "The unification of Germany and Italy in 1871", "The French Revolution of 1789", "The Napoleonic unification of Europe in the early 19th century"], answer: 2, exp: "The French Revolution of 1789 popularized modern nationalism." },
+                { q: "Consider the following statements about the types of nationalism:\nI. Civic nationalism emphasizes shared citizenship, political institutions, and liberal values.\nII. Ethnic nationalism defines the nation in terms of shared ethnicity.\nIII. Nativist nationalism holds that belonging is defined solely by birth on its territory.\nIV. Left-wing nationalism prioritizes ethnic homogeneity and opposes social equality.", options: ["I, II and III only", "I and IV only", "II, III and IV only", "I, II, III and IV"], answer: 0, exp: "Statement IV is false; left-wing nationalism opposes ethnic chauvinism." },
+                { q: "Read the following Assertion (A) and Reasoning (R) and choose the correct option.\n(A): The Indian National Movement presented a uniquely different form of nationalist thought to the world compared to European nationalisms.\n(R): Beginning with the Gandhian era, the Indian National Movement was not merely a struggle for political freedom but also addressed social evils, economic oppression, and development.", options: ["Both (A) and (R) are true, and (R) explains (A)", "Both (A) and (R) are true, but (R) does not explain (A)", "(A) is true, but (R) is false", "(A) is false, but (R) is true"], answer: 0, exp: "Both A and R are true and R explains A." },
+                { q: "Which of the following best describes the Imperialist/Cambridge interpretation of Indian nationalism?", options: ["Indian nationalism was the product of economic grievances caused by British colonial exploitation", "Indian nationalism arose from the awakening created by socio-religious reform movements", "Indian nationalism was a struggle by elites to maintain or improve their social position, with India being merely a geographical expression incapable of forming a nation", "Indian nationalism occurred through two parallel domains: elite politics and the politics of the people"], answer: 2, exp: "Cambridge historians viewed nationalism as factional rivalry among native elites." },
+                { q: "With reference to the early Indian National Congress, consider the following statements:\nI. The first president of the Indian National Congress was W.C. Banerjee.\nII. Dadabhai Naoroji presided over the second session of the INC held in Calcutta in 1886.\nIII. Lord Dufferin described the INC as an organization of a microscopic minority after 1887.\nIV. By the year 1890, the British government forbade its employees from attending meetings.", options: ["I and III only", "I, II and III only", "II, III and IV only", "I, II, III and IV"], answer: 3, exp: "All statements regarding the early INC are correct." },
+                { q: "Read the following Assertion (A) and Reasoning (R) and choose the correct option.\n(A): The early moderate phase of the Indian National Congress (1885-1905) was criticized as political mendicancy.\n(R): Moderates used the language of suggestion rather than demand, and prayer and petition rather than condemnation.", options: ["Both (A) and (R) are true, and (R) explains (A)", "Both (A) and (R) are true, but (R) does not explain (A)", "(A) is true, but (R) is false", "(A) is false, but (R) is true"], answer: 0, exp: "Both A and R are true and R explains A." },
+                { q: "Which of the following international events are correctly identified as factors that motivated the extremist group within the INC?\nI. Italy's defeat at the hands of Ethiopia in 1896\nII. Japan's victory over Russia in the Russo-Japanese War of 1905\nIII. Unification of Germany and Italy in 1871\nIV. February Revolution of 1848 in France", options: ["I and II only", "I, II and III only", "II, III and IV only", "I, II, III and IV"], answer: 0, exp: "Italy's defeat by Ethiopia and Japan's victory over Russia inspired Indian extremists." },
+                { q: "Consider the following statements about the ideological basis of extremism in the INC:\nI. Spiritually, extremists sought a strong position for Hinduism against evangelicals.\nII. Culturally, extremists tried to resist colonial distortion of indigenous systems like Ayurveda, Unani, and Siddha.\nIII. Politically, extremists supported merging Indian identity with the British image.\nIV. Tilak used the Ganapati and Shivaji festivals to attract large numbers of people.", options: ["I, II and IV only", "I and III only", "II, III and IV only", "I, II, III and IV"], answer: 0, exp: "Statement III is false because extremists demanded immediate Swaraj, rejecting loyalism." },
+                { q: "Read the following statements about the Surat Split of 1907 and choose the correct option:\nI. The split occurred at Surat on 26 December 1907 due to clashes between moderates and extremists.\nII. After the split, extremist leaders like Tilak were permanently expelled from the INC.\nIII. The extremist leaders came back into the mainstream in the form of the Home Rule Movement in 1916.", options: ["I and II only", "II and III only", "I and III only", "I, II and III"], answer: 2, exp: "Statement II is false because extremists rejoined the Congress in 1916." },
+                { q: "Which of the following were key demands of the Moderate phase of the INC (1885-1905)?\nI. Expansion of imperial and provincial legislative councils.\nII. Immediate grant of complete independence (Swaraj).\nIII. Indianization of higher grades in civil services.\nIV. Reduction of taxation and military expenses.", options: ["I, II and III only", "II and IV only", "I, III and IV only", "I, II, III and IV"], answer: 2, exp: "Statement II is incorrect because moderates demanded colonial reforms, not immediate complete independence." }
+            ],
+            5: [
+                { q: "Which of the following statements is/are correct about the Anushilan Samiti?\nI. It was established in Calcutta in 1902\nII. Its initial focus was to develop Indian values and sports\nIII. It was the first secret society to declare complete independence as the final goal", options: ["A. I only", "B. I and II only", "C. II and III only", "D. I, II and III"], answer: 3, exp: "All statements regarding Anushilan Samiti are correct." },
+                { q: "The revolutionary terrorists in colonial India were primarily inspired by which global events?\nI. The French Revolution\nII. Russian revolutionary activities against the Tsarist government\nIII. Italian unification process led by Mazzini", options: ["A. I and II only", "B. II and III only", "C. I and III only", "D. I, II and III"], answer: 3, exp: "Revolutionaries drew inspiration from global liberation movements." },
+                { q: "Who among the following founded the Mohammedan Association in 1877?", options: ["A. Syed Ahmad Khan", "B. Aga Khan", "C. Syed Amir Ali", "D. Nawab Salimullah"], answer: 2, exp: "Syed Amir Ali founded the Mohammedan Association." },
+                { q: "Which of the following is NOT correct about the formation of the All India Muslim League in 1906?", options: ["A. It was formed at the Dhaka Nawab family palace on 30th December 1906", "B. Aga Khan led the Shimla deputation to Viceroy Lord Minto", "C. One of its objectives was to promote loyalty towards the British", "D. The Muslim League was formed during the All India National Conference held in Lahore"], answer: 3, exp: "It was formed during the Muhammadan Educational Conference in Dhaka, not Lahore." },
+                { q: "Consider the following statements about the Hindu Mahasabha:\nI. Founded in 1915 by Madan Mohan Malaviya\nII. Formed as an umbrella organisation during Kumbh Mela in Haridwar\nIII. Received strong British support similar to that extended to the Muslim League", options: ["A. I only", "B. I and II only", "C. II and III only", "D. All of the above"], answer: 1, exp: "Statement III is false; the British did not patronize the Hindu Mahasabha in the same counter-weight manner." },
+                { q: "The 1861 Indian Councils Act is considered significant in the history of Indian constitutional development because:", options: ["A. It introduced separate electorates for religious communities", "B. It allowed Indians to vote in general elections for the first time", "C. It included Indians as non-official members in the Imperial and Legislative Councils for the first time", "D. It granted Indians the power to discuss military and foreign affairs"], answer: 2, exp: "It initiated the policy of association by nominating Indians as non-official members." },
+                { q: "What was the significance of the Lucknow Pact of 1916?\nI. INC and Muslim League jointly presented a scheme of constitutional reforms\nII. Agreed to allow representation for religious minorities in provincial legislatures\nIII. Congress accepted a separate electorate for Muslims with weightage", options: ["A. I and II only", "B. II and III only", "C. I and III only", "D. I, II and III"], answer: 3, exp: "All statements reflect the Lucknow Pact." },
+                { q: "Who described separate electorates for Muslims introduced by the 1909 Act as 'a political barrier isolating them from the rest of India'?", options: ["A. Mahatma Gandhi", "B. Bal Gangadhar Tilak", "C. Jawaharlal Nehru", "D. Annie Besant"], answer: 2, exp: "Jawaharlal Nehru criticized separate electorates." },
+                { q: "Which of the following correctly explains why the British shifted the capital from Calcutta to Delhi in 1911?", options: ["A. Delhi was cooler and more suitable", "B. Calcutta had become economically weak", "C. The British sought to associate themselves with the old Mughal glory and legitimise their authority", "D. The Delhi Darbar required permanent presence in the north"], answer: 2, exp: "Moving to Delhi symbolized continuity with past imperial traditions." },
+                { q: "According to historian Burton Stein, which of the following best describes the character of the Extremist period?", options: ["A. Only peaceful and secular methods were used", "B. Secular, communal, peaceful, and violent methods functioned as alternate trajectories or combined ones", "C. Religious methods completely replaced secular methods", "D. Revolutionary terrorism was the sole dominant method"], answer: 1, exp: "Stein noted the diverse and multifaceted methods used during the extremist phase." }
+            ],
+            6: [
+                { q: "Read the following statements and choose the correct option:\nI. Gandhi established the Natal Indian Congress in 1894 to protect merchants in South Africa.\nII. The Natal Indian Congress later became associated with the African National Congress under Nelson Mandela.", options: ["A. Both I and II are true", "B. I is true, but II is false", "C. Both I and II are false", "D. I is false, but II is true"], answer: 1, exp: "Statement II is false; NIC collaborated with ANC later but did not merge into it under Mandela." },
+                { q: "Which newspaper did Gandhi establish in South Africa to educate the European community?", options: ["A. Maratha", "B. Young India", "C. Indian Opinion", "D. Kesari"], answer: 2, exp: "Gandhi established Indian Opinion in South Africa." },
+                { q: "What was the primary reason Gandhi extended support to the British during the Boer Wars?", options: ["A. He was contractually obligated", "B. He believed it was the best way to portray Indians as loyal British subjects deserving equal treatment", "C. He personally supported British imperial expansion", "D. He was paid by the British military"], answer: 1, exp: "He believed fulfilling civic duties would earn Indians legitimate rights." },
+                { q: "What was the background crop-related crisis that led Gandhi to initiate the Champaran Satyagraha in 1917?", options: ["A. Failure of cotton crops", "B. Decline in indigo demand due to arrival of synthetic German chemical dye", "C. British monopoly over tea", "D. Drought-related sugarcane failure"], answer: 1, exp: "Synthetic German dyes ruined natural indigo, causing planter exploitation." },
+                { q: "Read the following statements about the Kheda Satyagraha:\nI. No-tax campaign led by Gandhi during drought and famine.\nII. Vallabhbhai Patel assisted Gandhi.\nIII. The British fully conceded all demands.", options: ["A. I and II only", "B. I, II and III", "C. II and III only", "D. I only"], answer: 0, exp: "Statement III is false because the government made a compromise rather than a full blanket concession." },
+                { q: "What was the result of Gandhi's hunger strike during the Ahmedabad Mill Strike of 1918?", options: ["A. Mill owners shut down permanently", "B. Workers received 50% wage increase", "C. Mill owners agreed to a 35% wage increase", "D. British nationalized the mills"], answer: 2, exp: "The strike ended with a 35% wage increase." },
+                { q: "Which of the following was NOT a feature of the Montagu-Chelmsford Reforms of 1919?", options: ["A. Bicameral central legislature", "B. Expansion of separate communal electorates to Sikhs and Anglo-Indians", "C. Introduction of Dyarchy in provinces", "D. Complete removal of property qualifications for voting rights"], answer: 3, exp: "Property qualifications for voting remained strict." },
+                { q: "Consider the following statements about the Home Rule Movement (1916-1918):\nI. Tilak founded his league in Belgaum, operating in Maharashtra, Karnataka, Central Provinces, and Berar.\nII. Annie Besant founded her league with headquarters at Adyar, Madras, using newspapers New India and Commonweal.\nIII. Besant's arrest in 1917 weakened the movement.\nIV. By 1920, Home Rule Leagues merged with INC.", options: ["A. I, II and IV only", "B. I, II and III only", "C. II, III and IV only", "D. I, II, III and IV"], answer: 0, exp: "Statement III is false because Besant's arrest actually energized public support." },
+                { q: "Arrange the following events in correct chronological order:\nI. Gandhi's arrival in India and setting up of Satyagraha Ashram\nII. Publication of Hind Swaraj\nIII. Formation of Natal Indian Congress\nIV. Passing of Montagu-Chelmsford Reforms", options: ["A. III-II-I-IV", "B. II-III-I-IV", "C. III-I-II-IV", "D. I-III-II-IV"], answer: 0, exp: "NIC (1894), Hind Swaraj (1909), Gandhi's arrival (1915), Mont-Ford reforms (1919)." },
+                { q: "Match the following historical events/leaders:", options: ["A. I-C, II-B, III-D, IV-A", "B. I-B, II-C, III-A, IV-D", "C. I-D, II-A, III-C, IV-B", "D. I-C, II-A, III-B, IV-D"], answer: 0, exp: "Standard week 6 matching." }
+            ],
+            7: [
+                { q: "Consider the following statements.\nI. The Ottoman Emperors conquered Constantinople in 1453.\nII. The INC formally supported the Khilafat movement at the All India Khilafat Conference in Delhi in November 1919.", options: ["A. I only", "B. II only", "C. Both I and II", "D. Neither I nor II"], answer: 2, exp: "Both statements are correct." },
+                { q: "Who were the leaders of the All India Khilafat Committee formed in September 1919?", options: ["A. Motilal Nehru and Madan Mohan Malaviya", "B. Maulana Shaukat Ali and Muhammad Ali", "C. Muhammad Ali Jinnah and Lala Lajpat Rai", "D. Maulana Abul Kalam Azad and Rajendra Prasad"], answer: 1, exp: "The Ali brothers led the Khilafat agitation." },
+                { q: "What was the immediate trigger that led Gandhi to call off the Non-Cooperation Movement in February 1922?", options: ["A. Malabar Mappila rebellion", "B. Chauri Chaura incident", "C. Arrest of major INC leaders", "D. Birth of the Republic of Turkey"], answer: 1, exp: "The violence at Chauri Chaura prompted Gandhi to suspend the movement." },
+                { q: "The party formed in January 1923 by Motilal Nehru and C. R. Das was also known as:", options: ["A. The Indian Home Rule League", "B. The Congress-Khilafat Swarajya Party", "C. The All India Forward Bloc", "D. The Indian Liberal Federation"], answer: 1, exp: "The Swaraj Party was formally known as the Congress-Khilafat Swarajya Party." },
+                { q: "Which of the following was NOT a feature of Gandhi's Post-Non-Cooperation Constructive Programme?", options: ["A. Promotion of Khadi and Charkha", "B. Campaign against untouchability", "C. Boycott of the 1923 Legislative Council elections", "D. Promotion of Hindu-Muslim unity"], answer: 2, exp: "Swarajists contested the 1923 elections." },
+                { q: "The Borsad Satyagraha of 1923 was primarily a struggle against:", options: ["A. Forced eviction of peasants", "B. A punitive poll tax imposed to fund special anti-dacoity police forces", "C. Permanent Settlement in Gujarat", "D. British control over local panchayat bodies"], answer: 1, exp: "It protested an unjust tax for anti-dacoity policing." },
+                { q: "Consider the following statements about the Awadh peasant movement.\nI. UP Kisan Sabha set up in 1918.\nII. Baba Ramachandra formed Awadh Kisan Sabha in 1920 and invited Jawaharlal Nehru.", options: ["A. I only", "B. II only", "C. Both I and II", "D. Neither I nor II"], answer: 2, exp: "Both statements are correct." },
+                { q: "The Eka movement of 1921 in United Provinces derived its name from the Hindi word 'Eka', which means:", options: ["A. Resistance", "B. Unity", "C. Revolution", "D. Refusal"], answer: 1, exp: "'Eka' means unity." },
+                { q: "Which of the following accurately describes the core objective of the Akali movement (Gurdwara Reform Movement)?", options: ["A. To convert Sikh Gurdwaras into centres for Non-Cooperation", "B. To free Gurdwaras from corrupt hereditary Mahants and place them under Sikh community control", "C. To demand a separate Sikh homeland", "D. To abolish the caste system within Sikhism"], answer: 1, exp: "It aimed to liberate historical Gurdwaras from corrupt mahants." },
+                { q: "Match the following:", options: ["A. I-A, II-C, III-B, IV-D", "B. I-B, II-D, III-A, IV-C", "C. I-C, II-A, III-B, IV-D", "D. I-C, II-B, III-D, IV-A"], answer: 2, exp: "Standard week 7 matching." }
+            ],
+            8: [
+                { q: "What was the primary reason the Simon Commission was widely condemned in India?", options: ["A. Recommended abolition of separate electorates", "B. Formed without INC approval", "C. It did not have any Indian members", "D. Proposed complete independence"], answer: 2, exp: "The Simon Commission completely excluded Indians." },
+                { q: "With reference to the Nehru Report (1928), choose the correct statements:\nI. Bicameral central legislature based on adult suffrage.\nII. No state religion; men and women equal rights.\nIII. Separate electorates for all minority communities.\nIV. Proposed creation of a Supreme Court.", options: ["A. I, II and IV", "B. I, III and IV", "C. II, III and IV", "D. I, II, III and IV"], answer: 0, exp: "Statement III is false; Nehru Report rejected separate electorates." },
+                { q: "Which resolution at the Lahore session of INC in 1929 marked a decisive shift?", options: ["A. Boycott Simon Commission", "B. Dominion status goal", "C. Purna Swaraj resolution declaring complete independence", "D. Trade Union Committee formation"], answer: 2, exp: "The Lahore session passed Purna Swaraj." },
+                { q: "Which writer's essay on Civil Disobedience deeply influenced Gandhi?", options: ["A. Leo Tolstoy", "B. John Ruskin", "C. Henry David Thoreau", "D. Karl Marx"], answer: 2, exp: "Henry David Thoreau's essay influenced Gandhi." },
+                { q: "The Bardoli Satyagraha of 1928 was led by which leader, and against what grievance?", options: ["A. Mahatma Gandhi, against salt tax", "B. Sardar Vallabhbhai Patel, against enhancement of land revenue", "C. Jawaharlal Nehru, against voter disqualification", "D. Motilal Nehru, against Rowlatt Act"], answer: 1, exp: "Patel led Bardoli against land revenue hikes." },
+                { q: "What was Gandhi's proposal at the Calcutta session in 1928 to reconcile factions?", options: ["A. Immediate Civil Disobedience", "B. Dominion status if Muslim League agrees", "C. Give British one year to grant Dominion status, else pursue complete independence through civil disobedience", "D. Adopt Jinnah's Fourteen Points"], answer: 2, exp: "Gandhi proposed a one-year ultimatum for Dominion status." },
+                { q: "With regard to the Hindustan Socialist Republican Association (HSRA):\nI. Founded in 1924 as HRA.\nII. Bhagat Singh, Chandrashekhar Azad, Sukhdev, and Rajguru key figures.\nIII. Active in Bengal and Assam.\nIV. Bhagat Singh and B. K. Dutt threw a bomb in Central Assembly.", options: ["A. I, II and III", "B. I, II and IV", "C. II, III and IV", "D. I and III only"], answer: 1, exp: "Statement III is false; HSRA was active in northern India, not Bengal/Assam." },
+                { q: "The Chittagong Armoury Raid of 1930 was conducted under whose leadership?", options: ["A. Bhagat Singh", "B. Ram Prasad Bismil", "C. Surya Sen", "D. Chandrashekhar Azad"], answer: 2, exp: "Surya Sen led the Indian Republican Army in Chittagong." },
+                { q: "Who was the pioneer of early socialist ideas in India who published a book comparing Gandhi and Lenin in 1921?", options: ["A. M. N. Roy", "B. Singaravelu", "C. Jayaprakash Narayan", "D. S. A. Dange"], answer: 3, exp: "S. A. Dange published 'Gandhi versus Lenin'." },
+                { q: "With reference to Gandhi's 11-point ultimatum to Lord Irwin in 1930:\nI. 50% reduction in military expenditure and civil salaries.\nII. Change in Arms Act.\nIII. Reservation of coastal shipping for Indians.\nIV. Separate electorates for minorities.", options: ["A. I, II and III", "B. I, III and IV", "C. II and IV only", "D. I, II, III and IV"], answer: 0, exp: "Statement IV is false; separate electorates were not demanded." }
+            ],
+            9: [
+                { q: "Which region of India served as the heartland of Civil Disobedience Movement, witnessing well-organised salt satyagrahas?", options: ["A. Maharashtra", "B. Gujarat", "C. Bengal", "D. Punjab"], answer: 1, exp: "Gujarat was the heartland of salt satyagrahas." },
+                { q: "Who led the parallel Salt March in South India from Trichy to Vedaranyam in April 1930?", options: ["A. Jawaharlal Nehru", "B. Sardar Patel", "C. Khan Abdul Ghaffar Khan", "D. C. Rajagopalachari"], answer: 3, exp: "C. Rajagopalachari led the Vedaranyam march." },
+                { q: "What was the outcome for British cloth imports as a direct result of Indian business community co-operation with CDM?", options: ["A. Imports rose by 25%", "B. Imports unchanged", "C. Imports fell by nearly 50% from 1929 to 1930", "D. Imports banned"], answer: 2, exp: "Boycotts caused cloth imports to plummet." },
+                { q: "Which British political party held a minority government since 1929 and convened the Round Table Conferences?", options: ["A. Conservative Party", "B. Liberal Party", "C. Labour Party", "D. Unionist Party"], answer: 2, exp: "The Labour Party was in power." },
+                { q: "What action did Gandhi take in October 1934 in response to divergent ideological trends within Congress?", options: ["A. Launched new mass movement", "B. Announced resignation from Congress membership to serve it through constructive work", "C. Expelled socialist faction", "D. Dissolved AICC"], answer: 1, exp: "Gandhi resigned from active Congress membership in 1934." },
+                { q: "According to Bipan Chandra, which social group's pressure on Gandhi was most significant in leading him to sign the Gandhi-Irwin Pact?", options: ["A. Peasant communities", "B. Indian business and industrial classes", "C. Muslim League leaders", "D. Left-wing leaders"], answer: 1, exp: "Indian business classes pressured for an end to economic disruption." },
+                { q: "The Communal Award announced by Ramsay MacDonald in August 1932 extended separate electorates to which group for the first time?", options: ["A. Sikhs and Christians", "B. Muslims and Anglo-Indians", "C. Depressed Classes", "D. Women voters"], answer: 2, exp: "It extended separate electorates to the Depressed Classes." },
+                { q: "At which conference did Ambedkar publicly burn a copy of the Manusmriti in December 1927?", options: ["A. Nagpur Conference", "B. Mahad Conference", "C. Lucknow Depressed Classes Conference", "D. Poona Conference"], answer: 1, exp: "Ambedkar burned the Manusmriti at the Mahad Satyagraha." },
+                { q: "Which of the following best describes the orthodox Hindu response to Gandhi's Harijan Campaign?", options: ["A. Fiercely opposed it, argued untouchability was divinely sanctioned, and disrupted meetings", "B. Welcomed it", "C. Remained neutral", "D. Supported publicly but opposed privately"], answer: 0, exp: "Orthodox conservatives strongly protested and disrupted meetings." },
+                { q: "Read Assertion (A) and Reason (R):\nAssertion (A): Nehru opposed both council-entry and replacement of civil disobedience with constructive program in 1933-34.\nReason (R): Nehru believed these diversions sidetracked direct mass action.", options: ["Both A and R are true, and R correctly explains A", "Both A and R are true, but R does not explain A", "A is true, but R is false", "A is false, but R is true"], answer: 0, exp: "Both A and R are true and R explains A." }
+            ],
+            10: [
+                { q: "Which of the following correctly describes the legislative structure proposed by the Government of India Act of 1935?", options: ["A. Unicameral legislature", "B. A bicameral legislature with the Council of States and the Federal Assembly", "C. Central Legislative Assembly and Council of States", "D. Unicameral with Council of States only"], answer: 1, exp: "The 1935 Act proposed a bicameral federal legislature." },
+                { q: "Consider statements about the debate on office acceptance after 1937 elections:\nI. Pro-office faction led by Nehru, Bose, and Socialists.\nII. Anti-office faction argued accepting office would betray Poorna Swaraj.", options: ["A. Both I and II are correct", "B. I is true, but II is false", "C. I is false, but II is true", "D. Both I and II are false"], answer: 2, exp: "Statement I is false because Nehru and socialists opposed office acceptance." },
+                { q: "Which regional party performed well in 1937 elections in Punjab representing wealthy landlords?", options: ["A. Krishak Praja Party", "B. Justice Party", "C. Independent Labour Party", "D. Unionist Party"], answer: 3, exp: "The Unionist Party dominated Punjab." },
+                { q: "The Wardha Scheme, promoted by Congress ministries in 1938, was primarily related to:", options: ["A. Debt relief for peasants", "B. Basic education through productive craft and mother tongue instruction", "C. Temple entry rights", "D. Minimum wage legislation"], answer: 1, exp: "The Wardha Scheme introduced Basic Education (Nai Talim)." },
+                { q: "Consider statements about Congress ministries (1937-1939):\nI. Resigned after Viceroy declared India a party to WWII without consultation.\nII. Ruled for approximately 28 months.", options: ["A. Only I is correct", "B. Only II is correct", "C. Both I and II are correct", "D. Neither is correct"], answer: 2, exp: "Both statements are correct." },
+                { q: "The Muslim League celebrated December 22, 1939, as a 'Day of Deliverance' due to:", options: ["A. Passing of Lahore Resolution", "B. The resignation of the Congress ministries from provincial governments", "C. British rejection of independence", "D. Failure of All India Federation"], answer: 1, exp: "Resignation of Congress ministries triggered the celebration." },
+                { q: "The All India State People's Conference (AISPC), formed in December 1927, condemned which provision of the 1935 Act?", options: ["A. Abolition of dyarchy", "B. Creation of Federal Court", "C. Denial of the right of people of princely states to elect their own representatives to the federal legislature", "D. Extension of voting rights to women"], answer: 2, exp: "AISPC protested that princely states' representatives were nominated." },
+                { q: "The All India Kisan Sabha (AIKS) was formed in Lucknow in April 1936. Which slogan became associated with its early agrarian struggles?", options: ["A. Quit India", "B. Jai Jawan Jai Kisan", "C. Land to the Tiller", "D. Do or Die"], answer: 2, exp: "'Land to the Tiller' was the agrarian slogan." },
+                { q: "Consider statements about the Baksht movement of 1937 in Bihar:\nI. Organized by AIKS under Sahajanand Saraswati over self-cultivated lands seized by landlords.\nII. Congress ministry's full support resolved the issue without rift.", options: ["A. Both I and II are correct", "B. I is true, but II is false", "C. I is false, but II is true", "D. Both I and II are false"], answer: 1, exp: "Statement II is false because tensions arose between peasant demands and the ministry." },
+                { q: "The Bharat Stree Mahamandal, considered the first all-India women's organization, was founded in 1910 by:", options: ["A. Pandita Ramabai", "B. Sarojini Naidu", "C. Sarala Devi Chaudhurani", "D. Margaret Cousins"], answer: 2, exp: "Sarala Devi Chaudhurani founded it in 1910." }
+            ],
+            11: [
+                { q: "Why did Jawaharlal Nehru refuse to support Subhas Chandra Bose's re-election as Congress President in 1939?", options: ["A. He believed Bose lacked organizational skills", "B. He feared that Bose's victory would lead to a confrontation with Gandhi and weaken the national movement", "C. He disagreed with Purna Swaraj", "D. Committed to Sitaramayya"], answer: 1, exp: "Nehru feared splitting the movement and breaking with Gandhi." },
+                { q: "At the Tripuri Session of 1939, which resolution effectively ended Bose's presidency?", options: ["A. Patel's expulsion resolution", "B. Kripalani's committee resolution", "C. Govind Ballabh Pant's resolution reaffirming faith in Gandhian principles and asking Bose to nominate the Working Committee as per Gandhi's wishes", "D. Prasad's dissolution resolution"], answer: 2, exp: "Pant's resolution tied Bose's hands to Gandhian leadership." },
+                { q: "Arrange events in correct chronological order:\nI. Congress ministries resign.\nII. Muslim League observes Day of Deliverance.\nIII. Viceroy issues August Offer.\nIV. Gandhi launches individual Satyagraha.", options: ["A. I-II-IV-III", "B. II-I-III-IV", "C. I-II-III-IV", "D. III-II-I-IV"], answer: 2, exp: "Resignation (Oct 1939), Deliverance (Dec 1939), August Offer (Aug 1940), Individual Satyagraha (Oct 1940)." },
+                { q: "Which of the following statements correctly identifies reactions to the Cripps Mission proposals?\nI. Muslim League opposed a single Indian Union.\nII. Hindu Mahasabha supported non-accession clause.\nIII. Ambedkar and Dalits feared being left at the mercy of caste Hindus.\nIV. Punjabi Sikhs alarmed by minority status.", options: ["A. I, II & III only", "B. I, III & IV only", "C. II, III & IV only", "D. I, II, III & IV"], answer: 1, exp: "Statement II is false because Hindu Mahasabha opposed non-accession." },
+                { q: "Why did the British choose to try three INA officers belonging to three different religions at the Red Fort Trials?", options: ["A. To demonstrate inclusive nature", "B. Because they committed war crimes", "C. To divide public opinion along communal lines and prevent unity among Indian religious communities", "D. To satisfy League and Congress"], answer: 2, exp: "The British selected a Hindu, Muslim, and Sikh officer to test and fracture communal unity." },
+                { q: "How did historian F.G. Hutchins characterize the Quit India Movement?", options: ["A. Pre-planned revolutionary uprising", "B. A spontaneous revolution that emerged from the call to fight to the finish, driven by grassroots participants", "C. Freak and impulsive outburst", "D. Marxist peasant uprising"], answer: 1, exp: "Hutchins characterized it as a spontaneous mass revolution." },
+                { q: "Which best describes how Subhas Chandra Bose took command of the INA?", options: ["A. Founded INA in Singapore", "B. Took command of INA and Indian Independence League from Rash Behari Bose in Singapore in July 1943", "C. Revived INA in Germany", "D. Formed INA in Japan"], answer: 1, exp: "Bose took over leadership from Rash Behari Bose in Singapore." },
+                { q: "Which statements about the INA's Imphal Campaign are correct?\nI. Aimed to march through Burma to Imphal and Assam.\nII. Failed due to lack of air power, supply disruptions, and withdrawal of Japanese support.\nIII. Bose surrendered and was tried at Red Fort.", options: ["A. I only", "B. I and II only", "C. II and III only", "D. I, II and III"], answer: 1, exp: "Statement III is false; Bose did not surrender after Imphal." },
+                { q: "Which combination of factors contributed to the Bengal Famine of 1943?\nI. Destruction of rural boats under Boat Denial Policy.\nII. Fall of Burma cutting off food grain supply.\nIII. Extreme wartime inflation pushing rice prices beyond reach.\nIV. Deliberate British export policy.", options: ["A. I, II and III only", "B. I and IV only", "C. II, III and IV only", "D. I, II, III and IV"], answer: 0, exp: "Factors I, II, and III caused the catastrophe." },
+                { q: "What was the central deadlock that caused the Shimla Conference of 1945 to fail?", options: ["A. Congress refused representation", "B. British refused fixed date for independence", "C. Jinnah insisted the Muslim League be recognized as the sole representative of Indian Muslims for nominating all Muslim members, which Congress rejected", "D. Gandhi demanded Wavell step down"], answer: 2, exp: "Jinnah's insistence on being the sole spokesperson broke down talks." }
+            ],
+            12: [
+                { q: "The RIN Mutiny originated at which shore establishment?", options: ["A. HMIS Bombay", "B. HMIS Godavari", "C. HMIS Talwar", "D. HMIS Delhi"], answer: 2, exp: "It began on HMIS Talwar in Bombay on Feb 18, 1946." },
+                { q: "What was the central demand of the Tebhaga movement in Bengal?", options: ["A. Complete abolition of Zamindari", "B. Sharecroppers to receive two-thirds of the harvested crop", "C. Land ownership rights", "D. Equal wages"], answer: 1, exp: "Tebhaga means a two-thirds share for sharecroppers." },
+                { q: "Which commission's 1940 report provided legitimacy to the Tebhaga movement's demands?", options: ["A. Hunter Commission", "B. Simon Commission", "C. Floud Commission", "D. Famine Commission"], answer: 2, exp: "The Floud Commission recommended the two-thirds share." },
+                { q: "Which post-independence legislation legally recognized sharecroppers' right to two-thirds of the produce?", options: ["A. Land Acquisition Act, 1948", "B. Zamindari Abolition Act, 1951", "C. Bargadari Act, 1950", "D. Tenancy Reform Act, 1952"], answer: 2, exp: "The Bargadari Act of 1950 institutionalized the two-thirds share." },
+                { q: "Which event directly sparked the Telangana armed uprising in July 1946?", options: ["A. Arrest of Communist leaders", "B. The murder of Doddi Komarayya by a landlord's agents", "C. Formation of Razakars", "D. Bengal Famine"], answer: 1, exp: "The killing of activist Doddi Komarayya sparked the uprising." },
+                { q: "Which paramilitary group, associated with the Nizam of Hyderabad, was deployed to suppress the Telangana uprising?", options: ["A. Arya Samaj militia", "B. Deshmukh forces", "C. Razakars", "D. Jagirdar guards"], answer: 2, exp: "The Razakars were the pro-Nizam paramilitary force." },
+                { q: "What was the most significant political trigger for the Punnapra-Vayalar Uprising of 1946 in Travancore?", options: ["A. Martial law", "B. Nizam's refusal to join India", "C. Diwan CP Ramaswamy Aiyar's plan to declare Travancore an independent sovereign state", "D. Bengal famine"], answer: 2, exp: "Diwan CP's plan for an independent Travancore triggered the revolt." },
+                { q: "Which three British Cabinet Ministers formed the Cabinet Mission that arrived in India in March 1946?", options: ["A. Wavell, Cripps, Alexander", "B. Lord Pethick Lawrence, Sir Stafford Cripps, A. V. Alexander", "C. Mountbatten, Pethick Lawrence, Alexander", "D. Attlee, Cripps, Pethick Lawrence"], answer: 1, exp: "Pethick-Lawrence, Cripps, and Alexander formed the mission." },
+                { q: "Which military operation did India launch in September 1948 to forcibly annex Hyderabad?", options: ["A. Operation Vijay", "B. Operation Polo", "C. Operation Barga", "D. Operation Meghdoot"], answer: 1, exp: "Operation Polo was the military action against Hyderabad." },
+                { q: "Article 44 of the Indian Constitution, mandating a Uniform Civil Code, is part of:", options: ["A. Fundamental Rights", "B. Fundamental Duties", "C. Directive Principles of State Policy", "D. Emergency Provisions"], answer: 2, exp: "Article 44 falls under Part IV (Directive Principles of State Policy)." }
+            ]
+        };
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let practiceMode = 'practice';
+
+        function startQuiz() {
+            try {
+                const assignmentVal = document.getElementById('assignmentSelect').value;
+                practiceMode = document.getElementById('modeSelect').value;
+
+                if (assignmentVal === 'all') {
+                    currentQuestions = [];
+                    for (let key in questionDatabase) {
+                        currentQuestions = currentQuestions.concat(questionDatabase[key].map(q => ({...q, sourceAssignment: key})));
+                    }
+                } else {
+                    if (!questionDatabase[assignmentVal]) {
+                        alert("Please select a valid assignment.");
+                        return;
+                    }
+                    currentQuestions = questionDatabase[assignmentVal].map(q => ({...q, sourceAssignment: assignmentVal}));
+                }
+
+                currentQuestions.sort(() => Math.random() - 0.5);
+                currentIndex = 0;
+                score = 0;
+
+                document.getElementById('setupScreen').style.display = 'none';
+                document.getElementById('resultsScreen').style.display = 'none';
+                document.getElementById('quizScreen').style.display = 'block';
+
+                loadQuestion();
+            } catch (err) {
+                console.error(err);
+                alert("An error occurred while starting the quiz.");
+            }
+        }
+
+        function loadQuestion() {
+            const q = currentQuestions[currentIndex];
+            document.getElementById('progressText').innerText = `Question ${currentIndex + 1} of ${currentQuestions.length}`;
+            document.getElementById('assignmentBadge').innerText = `Week ${q.sourceAssignment}`;
+            document.getElementById('questionText').innerText = q.q;
+
+            const answersContainer = document.getElementById('answersContainer');
+            answersContainer.innerHTML = '';
+            document.getElementById('explanationBox').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            // Show Previous button only if not on the first question
+            document.getElementById('prevBtn').style.display = currentIndex > 0 ? 'inline-block' : 'none';
+
+            q.options.forEach((opt, idx) => {
+                const div = document.createElement('div');
+                div.className = 'option-item';
+                div.innerText = opt;
+                div.onclick = () => selectAnswer(idx);
+                answersContainer.appendChild(div);
+            });
+        }
+
+        function selectAnswer(selectedIndex) {
+            const q = currentQuestions[currentIndex];
+            const options = document.querySelectorAll('.option-item');
+
+            options.forEach(opt => opt.onclick = null);
+
+            if (practiceMode === 'practice') {
+                options.forEach((opt, idx) => {
+                    if (idx === q.answer) {
+                        opt.classList.add('correct');
+                    }
+                    if (idx === selectedIndex && idx !== q.answer) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                const expBox = document.getElementById('explanationBox');
+                expBox.innerText = `Explanation: ${q.exp}`;
+                expBox.style.display = 'block';
+            } else {
+                options.forEach((opt, idx) => {
+                    if (idx === selectedIndex) {
+                        opt.classList.add('selected');
+                    }
+                });
+            }
+
+            if (selectedIndex === q.answer) {
+                score++;
+            }
+
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadQuestion();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+
+            document.getElementById('finalScore').innerText = `${score} / ${currentQuestions.length}`;
+            
+            const percentage = (score / currentQuestions.length) * 100;
+            let msg = "Great effort! Practice again to master all concepts.";
+            if (percentage === 100) {
+                msg = "Outstanding! You got a perfect score! You are fully prepared.";
+            } else if (percentage >= 80) {
+                msg = "Fantastic job! You have a strong grasp of the material.";
+            }
+            document.getElementById('scoreMessage').innerText = msg;
+        }
+
+        function resetToSetup() {
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('setupScreen').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
